@@ -1,0 +1,166 @@
+#include <iostream>
+#include <string>
+#include <algorithm> // For std::reverse
+#include <cstdlib>   // For std::rand(), std::srand()
+#include <ctime>     // For std::time()
+#include <cctype>    // For toupper()
+#include <cmath>     // For pow()
+#include <limits>    // For std::numeric_limits
+
+// --- Function Declarations ---
+std::string decimalToBinary(int decimalNum);
+int binaryToDecimal(const std::string& binaryStr);
+std::string decimalToHexadecimal(int decimalNum);
+int hexadecimalToDecimal(const std::string& hexStr);
+void displayMenu();
+void demoFunction();
+
+// --- Main Function ---
+int main() {
+    std::srand(std::time(0)); // Seed random number generator
+
+    int choice;
+    do {
+        displayMenu();
+        std::cout << "Enter your choice (1-6): ";
+        std::cin >> choice;
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        switch (choice) {
+            case 1: {
+                int decimalNum;
+                std::cout << "Enter a decimal number: ";
+                std::cin >> decimalNum;
+                std::cout << "Binary representation: " << decimalToBinary(decimalNum) << std::endl;
+                break;
+            }
+            case 2: {
+                std::string binaryStr;
+                std::cout << "Enter a binary number: ";
+                std::cin >> binaryStr;
+                std::cout << "Decimal representation: " << binaryToDecimal(binaryStr) << std::endl;
+                break;
+            }
+            case 3: {
+                int decimalNum;
+                std::cout << "Enter a decimal number: ";
+                std::cin >> decimalNum;
+                std::cout << "Hexadecimal representation: " << decimalToHexadecimal(decimalNum) << std::endl;
+                break;
+            }
+            case 4: {
+                std::string hexStr;
+                std::cout << "Enter a hexadecimal number: ";
+                std::cin >> hexStr;
+                std::cout << "Decimal representation: " << hexadecimalToDecimal(hexStr) << std::endl;
+                break;
+            }
+            case 5: {
+                demoFunction();
+                break;
+            }
+            case 6: {
+                std::cout << "Exiting the program. Goodbye!" << std::endl;
+                break;
+            }
+            default: {
+                std::cout << "Invalid choice. Please enter a number between 1 and 6." << std::endl;
+                break;
+            }
+        }
+    } while (choice != 6);
+
+    return 0;
+}
+
+// --- Function Definitions ---
+
+void displayMenu() {
+    std::cout << "\n----------------------------------------" << std::endl;
+    std::cout << "            Conversion Menu             " << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << "1. Convert Decimal to Binary" << std::endl;
+    std::cout << "2. Convert Binary to Decimal" << std::endl;
+    std::cout << "3. Convert Decimal to Hexadecimal" << std::endl;
+    std::cout << "4. Convert Hexadecimal to Decimal" << std::endl;
+    std::cout << "5. Demo (Generate and convert random integers)" << std::endl;
+    std::cout << "6. Exit the program" << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+}
+
+std::string decimalToBinary(int decimalNum) {
+    if (decimalNum == 0) return "0";
+
+    std::string binaryStr;
+    while (decimalNum > 0) {
+        binaryStr += (decimalNum % 2 == 0) ? '0' : '1';
+        decimalNum /= 2;
+    }
+    std::reverse(binaryStr.begin(), binaryStr.end());
+    return binaryStr;
+}
+
+int binaryToDecimal(const std::string& binaryStr) {
+    int decimalValue = 0;
+    int power = 0;
+
+    for (int i = binaryStr.length() - 1; i >= 0; --i) {
+        if (binaryStr[i] == '1') {
+            decimalValue += static_cast<int>(std::pow(2, power));
+        }
+        ++power;
+    }
+    return decimalValue;
+}
+
+std::string decimalToHexadecimal(int decimalNum) {
+    if (decimalNum == 0) return "0";
+
+    const char hexDigits[] = "0123456789ABCDEF";
+    std::string hexStr;
+
+    while (decimalNum > 0) {
+        int remainder = decimalNum % 16;
+        hexStr += hexDigits[remainder];
+        decimalNum /= 16;
+    }
+    std::reverse(hexStr.begin(), hexStr.end());
+    return hexStr;
+}
+
+int hexadecimalToDecimal(const std::string& hexStr) {
+    int decimalValue = 0;
+    int power = 0;
+
+    for (int i = hexStr.length() - 1; i >= 0; --i) {
+        char ch = std::toupper(hexStr[i]);
+        int digit;
+
+        if (std::isdigit(ch)) {
+            digit = ch - '0';
+        } else if (ch >= 'A' && ch <= 'F') {
+            digit = ch - 'A' + 10;
+        } else {
+            std::cerr << "Invalid hexadecimal digit: " << ch << std::endl;
+            return -1;
+        }
+
+        decimalValue += digit * static_cast<int>(std::pow(16, power));
+        ++power;
+    }
+    return decimalValue;
+}
+
+void demoFunction() {
+    std::cout << "\n--- Demo Function ---" << std::endl;
+    int randomNum = std::rand() % 100;
+
+    std::string binary = decimalToBinary(randomNum);
+    std::string hex = decimalToHexadecimal(randomNum);
+
+    std::cout << "Generated random number: " << randomNum << std::endl;
+    std::cout << "Binary representation: " << binary << std::endl;
+    std::cout << "Hexadecimal representation: " << hex << std::endl;
+    std::cout << "--- End of Demo ---" << std::endl;
+}
