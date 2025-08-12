@@ -1,0 +1,1 @@
+Add input validation functions for binary and hexadecimal strings; display error messages for invalid inputs.
